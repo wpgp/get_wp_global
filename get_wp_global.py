@@ -5,13 +5,15 @@ import rasterio
 import geopandas as gpd
 import pandas as pd
 
-from tqdm import tqdm
 from rasterio import features
 from osgeo import gdal
 from shapely.geometry import box
 from typing import Dict, List, Tuple, Optional, Any, Callable
 
-def _build_vrt(home_dir, prefix, suffix, outfile):
+def _build_vrt(home_dir: str, 
+    prefix: str, 
+    suffix: str, 
+    outfile: str):
     '''
     List available rasters with specified pattern and 
     build GDAL virtual file for mosaicing purpose.
@@ -284,15 +286,20 @@ def get_data(gdf: gpd.GeoDataFrame,
     area = 1e-6*bds_.to_crs(3857).area[0]
     if area > 1e7:
         print('parallelize please')
-    
+
+    #Basic properties from the vrt file    
     vrt = gdal.Open(vrt_path)
     pop = vrt.GetRasterBand(1)
     trf = vrt.GetGeoTransform()
+    nodata = pop.GetNoDataValue()
+
+    #Locate the raster patch
     ll = world_to_pixel(trf, bds[0], bds[1])
     ur = world_to_pixel(trf, bds[2], bds[3])
     dx,dy = ur[0]-ll[0], ll[1]-ur[1]
     pop_data = pop.ReadAsArray(xoff=ll[0], yoff=ur[1], win_xsize=dx, win_ysize=dy)
-    nodata = pop.GetNoDataValue()
+
+    #Performing zonal statistics
     rast = rasterise(gdf, pop_data, nodata=nodata)
     stat = get_raster_stats(pop_data, rast, 
                             nodata=nodata,
@@ -304,5 +311,23 @@ def get_data(gdf: gpd.GeoDataFrame,
     else:
         return stat
     
+def wrapper(gdf: gpd.GeoDataFrame, 
+    dataset='R2024B',
+    year=2020,
+    resolution='100m',
+    home_dir='vrt', 
+    return_gdf: Optional[bool] = False, 
+    **kwargs):
+
+    '''
+    Additional wrapper to get_data(). This function
+    defines the vrt file required for specific dataset, year, and
+    resolution.
+    '''
+
+    vrt_path = f'{home_dir}/{dataset}/mosaic_{year}_{resolution}_constrained.vrt'
+    result = get_data(gdf, vrt_path, return_gdf=return_gdf, **kwargs)
+    return result
+
 if __name__ == '__main__':
     sys.exit(get_data())
