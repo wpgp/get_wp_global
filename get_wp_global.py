@@ -87,7 +87,7 @@ def get_raster_stats(
     df_list = []
 
     if len(t.shape) == 2:
-        t = t.reshape((1, t.shape))
+        t = t.reshape((1, *t.shape))
 
     if names is None:
         names = [f'sum_{a:02d}' for a in range(t.shape[0])]
@@ -198,6 +198,7 @@ def get_buffer(v: gpd.GeoDataFrame,
 def extract(gdf: gpd.GeoDataFrame, 
     vrt_path: str, 
     return_gdf: Optional[bool] = False, 
+    return_arr: Optional[bool] = False,
     **kwargs):
     '''
     Extracts total population in regions defined in the gdf.
@@ -276,11 +277,16 @@ def extract(gdf: gpd.GeoDataFrame,
     rast = rasterise(gdf, pop_data, nodata=nodata)
     stat = get_raster_stats(pop_data, rast, 
                             nodata=nodata,
-                            ids=gdf.index.values)
-    stat = stat.rename(columns={'sum':'pop'})
+                            ids=gdf.index.values, 
+                            names=['pop'])
+
     if return_gdf:
-        gdf['pop'] = stat['pop']
-        return gdf
+        gdf['id'] = gdf.index.values
+        stat = pd.merge(stat, gdf[['id','geometry']], on='id')
+        stat = gpd.GeoDataFrame(stat)
+
+    if return_arr:
+        return stat, pop_data
     else:
         return stat
     
@@ -294,6 +300,7 @@ def get_data_agesex(
     get_total: Optional[bool] = True,
     vrt_dir: Optional[str]='vrt', 
     return_gdf: Optional[bool] = False, 
+    return_arr: Optional[bool] = False,
     **kwargs):
     '''
     Extracts total population in regions defined in the gdf.
@@ -320,14 +327,18 @@ def get_data_agesex(
         - get_total: Boolean to get total population count.
         - vrt_dir: Directory of the virtual files defining the
                    raster mosaic.
-        - return_gdf: Boolean to return
+        - return_gdf: Boolean to return GeoDataFrame (table 
+                      with geometry)
+        - return_arr: Boolean to include gridded population data
+                      (numpy array) in the output
         - **kwargs: Additional arguments like 'rad' (defining
                     the buffer radius in km) and 'clip_buffer'
                     (whether to clip overlapping buffers or not).
                     
     Returns:
-        DataFrame or GeoDataFrame with 'pop' (total population)
-        column.
+        DataFrame or GeoDataFrame with population count at age-sex
+        structure. If return_arr = True, the output includes numpy
+        array
     
     Example:
         gdf = gpd.read_file('adm.gpkg')
@@ -415,7 +426,10 @@ def get_data_agesex(
     if return_gdf:
         gdf['id'] = gdf.index.values
         stat = pd.merge(stat, gdf[['id','geometry']], on='id')
-        return gpd.GeoDataFrame(stat)
+        stat = gpd.GeoDataFrame(stat)
+        
+    if return_arr:
+        return stat, pop_data
     else:
         return stat
     
