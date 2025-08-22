@@ -87,7 +87,7 @@ for res in ['1km', '100m']:
         
 #Creating virtual files for total age-sex structures
 home_dir = 'Z:/WPFTP/public/GIS/AgeSex_structures/Global_2015_2030'
-age_groups = list(range(0,15,5))
+age_groups = list(range(0,95,5))
 age_groups.insert(1, 1)
 
 for res in ['100m', '1km']:
