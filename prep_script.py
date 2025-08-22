@@ -79,7 +79,7 @@ for res in ['1km', '100m']:
         add = 'UA_v1'
         folder = '1km_ua'
     prefix = f'v1/{folder}/constrained'
-    for y in range(2020, 2021):
+    for y in range(2015, 2031):
         main_dir = f'{home_dir}/{dataset}/{y}'
         suffix = f'_pop_{y}_CN_{res}_{dataset}_{add}'
         outfile = f'vrt/{dataset}/pop/{folder}/{y}/mosaic_{y}_{res}_constrained.vrt'
