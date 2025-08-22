@@ -72,7 +72,7 @@ for y in range(2015, 2031):
 
 #Creating virtual files for total population
 home_dir = 'Z:/WPFTP/public/GIS/Population/Global_2015_2030'
-for res in ['1km']:
+for res in ['1km', '100m']:
     add = 'v1'
     folder = res
     if res == '1km':
