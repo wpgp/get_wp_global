@@ -72,7 +72,6 @@ for y in range(2015, 2031):
 
 #Creating virtual files for total population
 home_dir = 'Z:/WPFTP/public/GIS/Population/Global_2015_2030'
-home_dir = '../data'
 for res in ['1km']:
     add = 'v1'
     folder = res
@@ -86,10 +85,8 @@ for res in ['1km']:
         outfile = f'vrt/{dataset}/pop/{folder}/{y}/mosaic_{y}_{res}_constrained.vrt'
         build_vrt(main_dir, prefix, suffix, outfile)
         
-'''
 #Creating virtual files for total age-sex structures
 home_dir = 'Z:/WPFTP/public/GIS/AgeSex_structures/Global_2015_2030'
-home_dir = '../data'
 age_groups = list(range(0,15,5))
 age_groups.insert(1, 1)
 
@@ -111,5 +108,4 @@ for res in ['100m', '1km']:
             #male
             suffix = f'_m_{a:02d}_{y}_CN_{res}_{dataset}_{add}'
             outfile = f'vrt/{dataset}/agesex/{folder}/{y}/mosaic_m_{a:02d}_{y}_{res}_constrained.vrt'
-            build_vrt(main_dir, prefix, suffix, outfile)        
-'''
+            build_vrt(main_dir, prefix, suffix, outfile)
