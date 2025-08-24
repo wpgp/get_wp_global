@@ -105,7 +105,7 @@ def get_raster_stats(
                 tm = np.where(select, t_, np.nan)
                 val = np.nansum(tm)
             else:
-                val = np.nan
+                val = 0
             d[names[j]] = val
 
         df_list.append(d)
@@ -447,7 +447,10 @@ def get_data(gdf: gpd.GeoDataFrame,
     resolution.
     '''
 
-    vrt_path = f'{vrt_dir}/{dataset}/mosaic_{year}_{resolution}_constrained.vrt'
+    res = resolution
+    if res == '1km':
+        res = '1km_ua'
+    vrt_path = f'{vrt_dir}/{dataset}/pop/{res}/{year}/mosaic_{year}_{resolution}_constrained.vrt'
     result = extract(gdf, vrt_path, return_gdf=return_gdf, **kwargs)
     return result
 
