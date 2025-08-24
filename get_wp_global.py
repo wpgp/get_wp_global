@@ -257,9 +257,9 @@ def extract(gdf: gpd.GeoDataFrame,
         gdf = get_buffer(gdf, **kwargs)
     bds = gdf.total_bounds        
     bds_ = gpd.GeoDataFrame(geometry=[box(*bds)], crs=4326)
-    area = 1e-6*bds_.to_crs(3857).area[0]
-    if area > 1e7:
-        print('parallelize please')
+    #area = 1e-6*bds_.to_crs(3857).area[0]
+    #if area > 1e7:
+    #    print('parallelize please')
 
     #Basic properties from the vrt file    
     vrt = gdal.Open(vrt_path)
@@ -370,9 +370,9 @@ def get_data_agesex(
     bds = gdf.total_bounds
         
     bds_ = gpd.GeoDataFrame(geometry=[box(*bds)], crs=4326)
-    area = 1e-6*bds_.to_crs(3857).area[0]
-    if area > 1e7:
-        print('parallelize please')
+    #area = 1e-6*bds_.to_crs(3857).area[0]
+    #if area > 1e7:
+    #    print('parallelize please')
 
     #Basic properties from the vrt file
     folder = '100m'
@@ -385,7 +385,7 @@ def get_data_agesex(
     names = []
     if sex in ['female', 'both']:
         names += [f'f_{a:02d}' for a in age_groups]
-    else:
+    if sex in ['male', 'both']:
         names += [f'm_{a:02d}' for a in age_groups]
     
     vrt_paths = []
