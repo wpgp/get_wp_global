@@ -381,7 +381,10 @@ def get_data_agesex(
     
     age_min = max(0, age_range[0])
     age_max = min(90, age_range[-1])
-    age_groups = range(age_min, age_max+1, 5)
+    age_groups = list(range(age_min, age_max+1, 5))
+    if age_range[0] == 0:
+        age_range.insert(1, 1)
+        
     names = []
     if sex in ['female', 'both']:
         names += [f'f_{a:02d}' for a in age_groups]
