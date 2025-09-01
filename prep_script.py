@@ -1,8 +1,8 @@
 import os
 from osgeo import gdal
 
-dataset = 'R2024B'
-
+dataset = 'R2025A'
+version = 'v1'
 '''
 Expected directory tree:
 vrt/[dataset]
@@ -42,10 +42,7 @@ def build_vrt(home_dir: str,
         - prefix: Relative path from country folder
                   and the raster
         - suffix: File name suffix
-        - outfile: Output file name
-        
-    prefix = 'v1/1km_ua/constrained'
-    suffix = '_pop_2020_CN_1km_R2024B_UA_v1'
+        - outfile: Output file name        
     '''
     
     tlcs = os.listdir(home_dir)
@@ -73,12 +70,12 @@ for y in range(2015, 2031):
 #Creating virtual files for total population
 home_dir = 'Z:/WPFTP/public/GIS/Population/Global_2015_2030'
 for res in ['1km', '100m']:
-    add = 'v1'
+    add = version
     folder = res
     if res == '1km':
-        add = 'UA_v1'
+        add = f'UA_{version}'
         folder = '1km_ua'
-    prefix = f'v1/{folder}/constrained'
+    prefix = f'{version}/{folder}/constrained'
     for y in range(2015, 2031):
         main_dir = f'{home_dir}/{dataset}/{y}'
         suffix = f'_pop_{y}_CN_{res}_{dataset}_{add}'
@@ -91,12 +88,12 @@ age_groups = list(range(0,95,5))
 age_groups.insert(1, 1)
 
 for res in ['100m', '1km']:
-    add = 'v1'
+    add = version
     folder = res
     if res == '1km':
-        add = 'UA_v1'
+        add = f'UA_{version}'
         folder = '1km_ua'
-    prefix = f'v1/{folder}/constrained'
+    prefix = f'{version}/{folder}/constrained'
     for y in range(2015, 2031):
         main_dir = f'{home_dir}/{dataset}/{y}'
         for a in age_groups:

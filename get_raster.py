@@ -62,9 +62,9 @@ def check_nearest_tlc():
     return
     
 def get_urls(layer='pop', tlc='MOS', year=2020, res='1km',
-            dataset='R2025A', age_range=[0,10], **kwargs):
+            dataset='R2025A', version='v1', age_range=[0,10], **kwargs):
     """
-    Locates path to raster related to Worldpop Global Demographic Data
+    Locates path to raster related to the Worldpop Global Demographic Data
     (Global 2)
     
     Args:
@@ -77,6 +77,7 @@ def get_urls(layer='pop', tlc='MOS', year=2020, res='1km',
             to 2030).
         res (str): Spatial resolution of the raster ('100m' or '1km').
         dataset (str): Dataset code
+        version (str): Version number
         age_range (list): Range of the age to get
     """
     
@@ -104,7 +105,7 @@ def get_urls(layer='pop', tlc='MOS', year=2020, res='1km',
     age_groups = []
     agesex = None
     paths = []
-    suffix = 'v1.tif'
+    suffix = f'{version}.tif'
     res_ = res
     
     if layer in ['male', 'female', 'zip']:
@@ -147,7 +148,7 @@ def get_urls(layer='pop', tlc='MOS', year=2020, res='1km',
     
     if res == '1km':
         res = '1km_ua'
-        suffix = 'UA_v1.tif'
+        suffix = f'UA_{version}.tif'
     else:
         res = '100m'
         
@@ -155,7 +156,7 @@ def get_urls(layer='pop', tlc='MOS', year=2020, res='1km',
         p = f'{base}/{y}'
         for t,n in zip(tlc,name):
             fname = f'{n}_{layer}_{y}_CN_{res_}_{dataset}_{suffix}'
-            paths.append(f'{p}/{t}/v1/{res}/constrained/{fname}')
+            paths.append(f'{p}/{t}/{version}/{res}/constrained/{fname}')
             
     if agesex is not None:
         paths_ = paths.copy()
@@ -205,7 +206,7 @@ def usage():
     
 def wrapper():
     parser = argparse.ArgumentParser(
-        prog="download_wp_global",
+        prog="get_raster",
         description="Simple program to download Worldpop Global"
             "Demographic Data to local storage."
     )
@@ -216,6 +217,8 @@ def wrapper():
                         type=str, default='MOS')
     parser.add_argument('-d', '--dataset', help="dataset number",
                         type=str, default='R2025A')
+    parser.add_argument('-v', '--version', help="version number",
+                        type=str, default='v1')
     parser.add_argument('-y', '--year', help="year", 
                         type=int, default=2020)
     parser.add_argument('-ar', '--age_range', help="min and max age group to download, separated by comma",

@@ -292,7 +292,7 @@ def extract(gdf: gpd.GeoDataFrame,
     
 def get_data_agesex(
     gdf: gpd.GeoDataFrame, 
-    dataset='R2024B',
+    dataset='R2025A',
     year=2020,
     resolution='100m',
     age_range: List[int]=[0,90],
@@ -437,7 +437,7 @@ def get_data_agesex(
         return stat
     
 def get_data(gdf: gpd.GeoDataFrame, 
-    dataset='R2024B',
+    dataset='R2025A',
     year=2020,
     resolution='100m',
     vrt_dir='vrt', 

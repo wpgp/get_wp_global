@@ -6,13 +6,12 @@ This repository contains some Python functions for the following purposes:
 
 ## Download rasters
 ```python
-usage: download_wp_global [-h] [-l LAYER] [-t TLC]
-                          [-d DATASET] [-y YEAR]
-                          [-ar AGE_RANGE] [-dst DESTINATION]
-                          [-c | --check | --no-check]
+usage: get_raster [-h] [-l LAYER] [-t TLC]
+                  [-d DATASET] [-v VERSION] [-y YEAR]
+                  [-ar AGE_RANGE] [-dst DESTINATION]
+                  [-c | --check | --no-check]
 
-Simple program to download Worldpop GlobalDemographic Data to
-local storage.
+Simple program to download the Worldpop GlobalDemographic Data to local storage.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -23,6 +22,8 @@ optional arguments:
                         download
   -d DATASET, --dataset DATASET
                         dataset number
+  -v VERSION, --version VERSION
+                        version number
   -y YEAR, --year YEAR  year
   -ar AGE_RANGE, --age_range AGE_RANGE
                         min and max age group to download,
@@ -35,10 +36,10 @@ optional arguments:
 ```
 
 There are some use cases with different raster targets:
-- A global mosaic of population in 2020 (1-km resolution): `python download_wp_global.py -l pop -t MOS -y 2020 -dst output`
-- A raster of 100-m resolution population of Aruba (tlc=ABW) in 2020: `python download_wp_global.py -l pop -t ABW -y 2020 -dst output -res 100m`
-- Rasters of 1-km resolution female population (age 0-20) of Aruba in 2020: `python download_wp_global.py -t ABW -l female -ar 0,20 -y 2020 -res 1km -dst output`
-- A zip file containing rasters of 1-km resolution male and female population (all age groups) of Aruba in 2020: `python download_wp_global.py -l zip -t ABW -y 2020 -res 1km -dst output`
+- A global mosaic of population in 2020 (1-km resolution): `python get_raster.py -l pop -t MOS -y 2020 -dst output`
+- A raster of 100-m resolution population of Aruba (tlc=ABW) in 2020: `python get_raster.py -l pop -t ABW -y 2020 -dst output -res 100m`
+- Rasters of 1-km resolution female population (age 0-20) of Aruba in 2020: `python get_raster.py -t ABW -l female -ar 0,20 -y 2020 -res 1km -dst output`
+- A zip file containing rasters of 1-km resolution male and female population (all age groups) of Aruba in 2020: `python get_raster.py -l zip -t ABW -y 2020 -res 1km -dst output`
 
 ### Notes
 Acceptable values for the options:
@@ -67,7 +68,7 @@ exec(open('prep_script.py').read())
 Obtaining population count inside non-overlapping circular buffers around points defined in `adm.pkg`.
 
 ```python
-import get_wp_global as wp
+import get_table as wp
 
 vrt_path = 'vrt/R2024B/mosaic_2020_100m_constrained.vrt'
 result = wp.extract('adm.gpkg', vrt_path=vrt_path,
@@ -84,7 +85,7 @@ result1 = wp.get_data('adm.gpkg', dataset='R2024B',
 Extracting female population count with specified age range can be done using `get_data_agesex()`. The output contains population count at 5-year age interval. Total population count can also be extracted. This total covers the whole population, both sexes and all age intervals.
 
 ```python
-import get_wp_global as wp
+import get_table as wp
 
 result2 = wp.get_data_agesex('adm.geojson', dataset='R2024B', 
     year=2020, resolution='1km', 
