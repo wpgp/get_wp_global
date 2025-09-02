@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/1048475454.svg)](https://doi.org/10.5281/zenodo.17037858)
+
 # Get WorldPop Global Demographic Data
 
 This repository contains some Python functions for the following purposes:
