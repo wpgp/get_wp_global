@@ -137,4 +137,4 @@ If you use get_wp_global in your research, please cite:
 
 ## Acknowledgments
 
-- Developed by WorldPop SDI [sdi.worldpop.org](https:/sdi.worldpop.org)
+- Developed by WorldPop SDI [sdi.worldpop.org](https://sdi.worldpop.org)
