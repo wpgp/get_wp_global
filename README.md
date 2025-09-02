@@ -107,6 +107,32 @@ result2.head()
 
 Extracting gridded population count based on level-2 administrative boundaries covering some parts of Ghana, Benin, and Togo. Zonal statistics can be performed to obtain total population inside each administrative unit.
 
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Citation
+
+If you use pypopRF in your research, please cite:
+
+```bibtex
+@software{get_wp_global,
+  author = {Priyatikanto R., Nosatiuk B., Zhang W., McKeen T., Vataga E., Tejedor-Garavito N, Bondarenko M.},
+  title = {get_wp_global: Python package to locate and download Worldpop Global Demographic Data and acquire/summarise population count from the WorldPop Global Demographic Data v1.},
+  year = {2025},
+  publisher = {GitHub}, 
+  url = {https://github.com/wpgp/get_wp_global}
+}
+```
+
+## Acknowledgments
+
+- Developed by WorldPop SDI [sdi.worldpop.org](https:/sdi.worldpop.org)
+
 ![map](fig/arr.png)
 
 Extraction of total population using admin boundary (a) and circular buffer (b). The circular buffer is generated from the centroid of each administrative unit, which then clipped to avoid overlap.
