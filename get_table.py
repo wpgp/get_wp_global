@@ -197,6 +197,7 @@ def get_buffer(v: gpd.GeoDataFrame,
 
 def extract(gdf: gpd.GeoDataFrame, 
     vrt_path: str, 
+    explode: Optional[bool] = False,
     return_gdf: Optional[bool] = False, 
     return_arr: Optional[bool] = False,
     **kwargs):
@@ -220,6 +221,7 @@ def extract(gdf: gpd.GeoDataFrame,
         - vrt_path: Path to GDAL virtual file defining the
                     raster mosaic.
         - return_gdf: Boolean to return
+        - explode: Boolean to explode MultiPolygon to multiple Polygons.
         - **kwargs: Additional arguments like 'rad' (defining
                     the buffer radius in km) and 'clip_buffer'
                     (whether to clip overlapping buffers or not).
@@ -255,8 +257,13 @@ def extract(gdf: gpd.GeoDataFrame,
         
     if (np.all(gdf.geometry.geom_type == 'Point')):
         gdf = get_buffer(gdf, **kwargs)
+        explode = False
     bds = gdf.total_bounds        
     bds_ = gpd.GeoDataFrame(geometry=[box(*bds)], crs=4326)
+
+    if explode:
+        gdf = gdf.explode(index_parts=True).reset_index(drop=True)
+
     #area = 1e-6*bds_.to_crs(3857).area[0]
     #if area > 1e7:
     #    print('parallelize please')
@@ -298,6 +305,7 @@ def get_data_agesex(
     age_range: List[int]=[0,90],
     sex: Optional[str] = 'both',
     get_total: Optional[bool] = True,
+    explode: Optional[bool] = False,
     vrt_dir: Optional[str]='vrt', 
     return_gdf: Optional[bool] = False, 
     return_arr: Optional[bool] = False,
@@ -325,6 +333,7 @@ def get_data_agesex(
         - age_range: Age range to be extracted [min, max]
         - sex: Use 'male', 'female', or 'both'
         - get_total: Boolean to get total population count.
+        - explode: Boolean to explode MultiPolygon to multiple Polygons.
         - vrt_dir: Directory of the virtual files defining the
                    raster mosaic.
         - return_gdf: Boolean to return GeoDataFrame (table 
@@ -367,7 +376,11 @@ def get_data_agesex(
         
     if (np.all(gdf.geometry.geom_type == 'Point')):
         gdf = get_buffer(gdf, **kwargs)
+        explode = False
     bds = gdf.total_bounds
+        
+    if explode:
+        gdf = gdf.explode(index_parts=True).reset_index(drop=True)
         
     bds_ = gpd.GeoDataFrame(geometry=[box(*bds)], crs=4326)
     #area = 1e-6*bds_.to_crs(3857).area[0]
@@ -441,6 +454,7 @@ def get_data(gdf: gpd.GeoDataFrame,
     year=2020,
     resolution='100m',
     vrt_dir='vrt', 
+    explode: Optional[bool] = False,
     return_gdf: Optional[bool] = False, 
     **kwargs):
 
@@ -454,7 +468,7 @@ def get_data(gdf: gpd.GeoDataFrame,
     if res == '1km':
         res = '1km_ua'
     vrt_path = f'{vrt_dir}/{dataset}/pop/{res}/{year}/mosaic_{year}_{resolution}_constrained.vrt'
-    result = extract(gdf, vrt_path, return_gdf=return_gdf, **kwargs)
+    result = extract(gdf, vrt_path, return_gdf=return_gdf, explode=explode, **kwargs)
     return result
 
 if __name__ == '__main__':
