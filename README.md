@@ -74,13 +74,13 @@ import get_table as wp
 
 vrt_path = 'vrt/R2024B/mosaic_2020_100m_constrained.vrt'
 result = wp.extract('adm.gpkg', vrt_path=vrt_path,
-    rad=10, clip_buffer=True,
-    return_gdf=True)
+  rad=10, clip_buffer=True,
+  return_gdf=True)
 
 # Alternative usage
 result1 = wp.get_data('adm.gpkg', dataset='R2024B', 
-    year=2020, resolution='1km', vrt_dir='vrt',
-    return_gdf=True, rad=5, clip_buffer=False)
+  year=2020, resolution='1km', vrt_dir='vrt',
+  return_gdf=True, rad=5, clip_buffer=False)
 ```
 
 #### Age-sex structure
@@ -90,30 +90,72 @@ Extracting female population count with specified age range can be done using `g
 import get_table as wp
 
 result2 = wp.get_data_agesex('adm.geojson', dataset='R2024B', 
-    year=2020, resolution='1km', 
-    vrt_dir='vrt', sex='female', get_total=True,
-    return_gdf=False)
+  year=2020, resolution='1km', 
+  vrt_dir='vrt', sex='female', get_total=True,
+  return_gdf=False)
 
 result2.head()
 ```
 
-|    |   id |  f_00 |  f_05 |  f_10 |     pop |
-|---:|-----:|------:|------:|------:|--------:|
-|  0 |    0 | 18161 | 76259 | 65505 | 1087010 |
-|  1 |    1 |  2291 |  9623 |  8266 |  137168 |
-|  2 |    2 |  1428 |  5996 |  5151 |   85479 |
-|  3 |    3 |  4200 | 17637 | 15150 |  251403 |
-|  4 |    4 |   296 |  1244 |  1068 |   17732 |
+|    |   id |  f_00 |  f_05 |  f_10 |     pop | count |
+|---:|-----:|------:|------:|------:|--------:|------:|
+|  0 |    0 | 18161 | 76259 | 65505 | 1087010 |  1090 |
+|  1 |    1 |  2291 |  9623 |  8266 |  137168 |   136 |
+|  2 |    2 |  1428 |  5996 |  5151 |   85479 |    85 |
+|  3 |    3 |  4200 | 17637 | 15150 |  251403 |   250 |
+|  4 |    4 |   296 |  1244 |  1068 |   17732 |    18 |
 
 #### Some visualisations
 
 Extracting gridded population count based on level-2 administrative boundaries covering some parts of Ghana, Benin, and Togo. Zonal statistics can be performed to obtain total population inside each administrative unit.
 
-![map](fig/arr.png)
+![map-1](fig/arr.png)
 
 Extraction of total population using admin boundary (a) and circular buffer (b). The circular buffer is generated from the centroid of each administrative unit, which then clipped to avoid overlap.
 
-![map](fig/res.png)
+![map-2](fig/res.png)
+
+#### Weighted sum
+Suppose we want to estimate the number of people affected by a particular event occuring at a certain coordinate. We can define circular buffer around that point and apply zonal sum based on that buffer. The following code can be used to estimate total population (based on `test.tif`) over the area of interests which are 4-km circular buffers around the points defined in `test_point.gpkg`.
+
+```python
+pts = gpd.read_file(path)
+res,outpt = wp.extract(
+  'data/test_point.gpkg',
+  'output/test.tif',
+  resolution='1km',
+  return_all=True,
+  rad=4)
+```
+
+![fig-3](fig/aoi_point.png)
+
+For some cases where the impact of the event declines by distance from the epicenter, a radial weighting function can be used during aggregation. This function can be used for this purpose:
+(1 - np.exp(-(1-r)**p))/(1 - np.exp(-1)).
+$$w(r) = \dfrac{1-\exp(-(1-r)^p)}{1-\exp(-1)}$$
+
+![fig-4](fig/function.png)
+
+The following code is an example relevant to this task.
+
+```python
+res,outpt = wp.extract(
+  'data/test_point.gpkg',
+  'output/test.tif',
+  resolution='1km',
+  return_all=True,
+  rad=4, weight=True, p=1)
+```
+
+![fig-4](fig/aoi_point_weighted.png)
+
+This scheme can also be implemented in the high level extraction
+```python
+result3 = wp.get_data_agesex('test_point.gpkg', dataset='R2024B', 
+  year=2020, resolution='100m', 
+  vrt_dir='vrt', sex='both',
+  rad=5, weight=True, p=2)
+```
 
 ## Contributing
 

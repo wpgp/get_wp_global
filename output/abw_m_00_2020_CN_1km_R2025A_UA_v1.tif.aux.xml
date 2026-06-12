@@ -1,0 +1,12 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>global_m_00_2020_CN_1km_R2025A_v1</Description>
+    <Metadata>
+      <MDI key="STATISTICS_MAXIMUM">13.647415161133</MDI>
+      <MDI key="STATISTICS_MEAN">2.3516949184268</MDI>
+      <MDI key="STATISTICS_MINIMUM">3.4560280971845e-16</MDI>
+      <MDI key="STATISTICS_STDDEV">3.0684153041514</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">36.31</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>
