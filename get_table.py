@@ -227,6 +227,9 @@ def get_mask(
         #use default radius of 5 pixels
         rad = 5
 
+    #todo: get fun from kwargs if any
+    fun = utils.default_function
+
     #kernel size should be odd
     size = int(2*rad)
     if size % 2 == 0:
@@ -258,7 +261,7 @@ def get_mask(
     if kwargs.get('weighted'):
         if 'p' not in kwargs:
             kwargs['p'] = 1
-        krn = utils.radial_kernel(size, lambda r: utils.fun(r, kwargs['p'], rnorm=rad))
+        krn = utils.radial_kernel(size, lambda r: fun(r, kwargs['p'], rnorm=rad))
         krn /= krn.max()
         wgt = utils.max_conv_2d(arr > 0, krn, mode='same', weighted=True)
 

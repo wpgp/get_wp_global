@@ -99,11 +99,10 @@ result2.head()
 
 |    |   id |  f_00 |  f_05 |  f_10 |     pop | count |
 |---:|-----:|------:|------:|------:|--------:|------:|
-|  0 |    0 | 18161 | 76259 | 65505 | 1087010 |  1090 |
-|  1 |    1 |  2291 |  9623 |  8266 |  137168 |   136 |
-|  2 |    2 |  1428 |  5996 |  5151 |   85479 |    85 |
-|  3 |    3 |  4200 | 17637 | 15150 |  251403 |   250 |
-|  4 |    4 |   296 |  1244 |  1068 |   17732 |    18 |
+|  0 |    1 |  2291 |  9623 |  8266 |  137168 |   136 |
+|  1 |    2 |  1428 |  5996 |  5151 |   85479 |    85 |
+|  2 |    3 |  4200 | 17637 | 15150 |  251403 |   250 |
+|  3 |    4 |   296 |  1244 |  1068 |   17732 |    18 |
 
 #### Some visualisations
 
@@ -130,8 +129,7 @@ res,outpt = wp.extract(
 
 ![fig-3](fig/aoi_point.png)
 
-For some cases where the impact of the event declines by distance from the epicenter, a radial weighting function can be used during aggregation. This function can be used for this purpose:
-(1 - np.exp(-(1-r)**p))/(1 - np.exp(-1)).
+For some cases where the impact of the event declines by distance from the epicenter, a radial weighting function can be used during aggregation. The following function can be used for this purpose:
 $$w(r) = \dfrac{1-\exp(-(1-r)^p)}{1-\exp(-1)}$$
 
 ![fig-4](fig/function.png)
@@ -149,9 +147,25 @@ res,outpt = wp.extract(
 
 ![fig-4](fig/aoi_point_weighted.png)
 
-This scheme can also be implemented in the high level extraction
+In other occasion, we can implement the same radial weight to other types of geometry, such as LineString defining road or waterway and edges of a Polygon. Additional argument `edge=True` is used to obtain the edges of the input Polygon. We can break MultiPolygons into multiple Polygons by using `explode=True`. In this way, the population count in each row is associated with the segregated Polygons.
+
 ```python
-result3 = wp.get_data_agesex('test_point.gpkg', dataset='R2024B', 
+res,outpt = wp.extract(
+  'data/coastline.gpkg',
+  'output/test.tif',
+  resolution='1km',
+  return_all=True,
+  edge=True,
+  explode=True,
+  rad=4, weight=True, p=1)
+```
+
+![fig-5](fig/aoi_line_weighted.png)
+
+The above schemes can also be implemented in a high-level extraction. We just need to provide additional arguments to the extraction function.
+```python
+result3 = wp.get_data_agesex('test_point.gpkg', 
+  dataset='R2024B', 
   year=2020, resolution='100m', 
   vrt_dir='vrt', sex='both',
   rad=5, weight=True, p=2)

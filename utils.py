@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from numpy.lib.stride_tricks import as_strided
 from scipy.ndimage import distance_transform_edt
 
-def fun(r, p, rnorm=None):
+def default_function(r, p, rnorm=None):
     if rnorm is not None:
         m = r >= rnorm
         r /= rnorm
